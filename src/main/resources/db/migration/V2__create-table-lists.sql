@@ -1,0 +1,9 @@
+CREATE TABLE checklists (
+    id UUID PRIMARY KEY,
+    title VARCHAR(150) NOT NULL,
+    enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+    user_id UUID NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
