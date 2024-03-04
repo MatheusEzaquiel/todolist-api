@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileSystemUtils;
 
 import br.com.mbe.todolist.domain.auth.dto.RegisterDTO;
 import br.com.mbe.todolist.domain.user.User;
@@ -23,6 +24,7 @@ import br.com.mbe.todolist.repository.IChecklistRepository;
 import br.com.mbe.todolist.repository.ITaskRepository;
 import br.com.mbe.todolist.repository.IUserRepository;
 import br.com.mbe.todolist.service.auth.TokenService;
+import jakarta.transaction.Transactional;
 
 @Service
 public class UserService {
@@ -81,30 +83,34 @@ public class UserService {
 		return new DetailUserDTO(userRepos.save(user));
 
 	}
-
+	
+	@Transactional
 	public UserWithToken updateById(UpdateUserDTO data, UUID userId) {
 		
 		Optional<User> userSelected = userRepos.findById(userId);
 		
 		if(userSelected.isPresent()) {
 			
-			if(data.username() != null && data.username() != "") {
-				userSelected.get().setUsername(data.username());
+				if(data.username() != null && data.username() != "") {
+					userSelected.get().setUsername(data.username());
+				}
 				
-			}
-			
-			if(data.email() != null && data.email() != "") {
-				userSelected.get().setEmail(data.email());
-			}
-			
-			if(data.password() != null && data.password() != "") {
-				String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-				userSelected.get().setPassword(encryptedPassword);
-			}
-			
-			userSelected.get().setUpdatedAt(LocalDateTime.now());
-			
-			var userUpdated = userRepos.save(userSelected.get());
+				if(data.email() != null && data.email() != "") {
+					userSelected.get().setEmail(data.email());
+				}
+				
+				if(data.password() != null && !data.password().isEmpty()) {
+					System.out.println("password data: " + data.password());
+					System.out.println("new password set");
+					String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
+					userSelected.get().setPassword(encryptedPassword);
+				} else {
+					System.out.println("string pass empty");
+				}
+				
+				userSelected.get().setUpdatedAt(LocalDateTime.now());
+
+				var userUpdated = userRepos.save(userSelected.get());
 			
 			//Generating a new token
 			String tokenAuth = tokenService.generateToken(userUpdated);
@@ -113,6 +119,7 @@ public class UserService {
 			DetailUserDTO userDTO = new DetailUserDTO(userUpdated);
 			
 			return new UserWithToken(userDTO, tokenAuth);
+			
 		}
 		
 		throw new UserNotFoundedException("User not founded or doesn't exist");

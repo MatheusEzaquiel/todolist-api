@@ -3,7 +3,6 @@ package br.com.mbe.todolist.domain.task.dto;
 import java.util.UUID;
 
 import br.com.mbe.todolist.domain.task.Task;
-import br.com.mbe.todolist.utils.PriorityTask;
 
 public record ListTaskDTO(
 		UUID id,

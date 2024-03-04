@@ -54,10 +54,9 @@ public class UserController {
 	}
 	
 	@PutMapping("/{id}")
-	@Transactional
 	public ResponseEntity update(@PathVariable UUID id, @RequestBody UpdateUserDTO data) {
 
-		UserWithToken userUpdated = userService.updateById(data, id);
+		var userUpdated = userService.updateById(data, id);
 			
 		return ResponseEntity.status(HttpStatus.OK).body(userUpdated);
 		
