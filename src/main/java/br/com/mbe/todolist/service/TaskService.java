@@ -161,16 +161,10 @@ public class TaskService {
 
 		
 		if(data.startAtDate() != null && data.endAtDate() != null) {
-			System.out.println("data isn't null");
 			if (data.startAtDate().isAfter(data.endAtDate())) {
 				throw new Date1BiggerThanDate2Exception("The start date cannot be bigger than the end date");
 			}
 		}
-		
-		
-		
-		
-		System.out.println("passed here");
 	
 		
 			Task taskToCreate = new Task(
@@ -206,7 +200,6 @@ public class TaskService {
 		if (task.isPresent()) {
 			
 			if (data.title() != null && data.title().length() > 0) {
-				System.out.println("title is diferent of null");
 				task.get().setTitle(data.title());
 			}
 			
@@ -218,7 +211,6 @@ public class TaskService {
 				task.get().setDone(data.done());
 			}
 			
-
 			if (data.startAtDate() != null) {
 				task.get().setStartAtDate(data.startAtDate());
 			}
@@ -248,32 +240,7 @@ public class TaskService {
 
 			
 			return null;
-			/*	
-			if (data.startAtDate().isAfter(data.endAtDate())) {
-				throw new Date1BiggerThanDate2Exception("The start date cannot be bigger than the end date");
-			}
-
-			Task taskUpdated = taskRepos.save(task.get());
-
-			var startAtDateString = taskUpdated.getStartAtDate() != null
-					? taskUpdated.getStartAtDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
-					: null;
-			var startAtTimeString = taskUpdated.getStartAtTime() != null
-					? taskUpdated.getStartAtTime().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
-					: null;
-			var endAtDateString = taskUpdated.getEndAtDate() != null
-					? taskUpdated.getEndAtDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
-					: null;
-			var endAtTimeString = taskUpdated.getEndAtTime() != null
-					? taskUpdated.getEndAtTime().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
-					: null;
-
-			DetailTaskDTO taskUpdatedDTO = new DetailTaskDTO(taskUpdated, taskUpdated.getPriority().getPriority(),
-					startAtDateString, startAtTimeString, endAtDateString, endAtTimeString);
-
-			return taskUpdatedDTO;*/
 			
-
 		} else {
 			throw new TaskNotFoundedException("Task wasn't founded");
 		}
@@ -285,8 +252,7 @@ public class TaskService {
 		Task task = taskRepos.getReferenceById(idTask);
 
 		if (task == null) {
-			return null; // custom Exception ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tarefa
-							// // Não encontrada");
+			throw new TaskNotFoundedException("Task not founded");
 		}
 
 		task.delete();

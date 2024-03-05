@@ -63,7 +63,6 @@ public class TokenService {
 					.getSubject();
 		
 		} catch (JWTVerificationException ex) {
-			System.out.println(ex.getMessage());
 			
 			response.setStatus(403);
 			response.setContentType("application/json");
@@ -72,7 +71,7 @@ public class TokenService {
 	        String errorJson = new ObjectMapper().writeValueAsString(errorDTO);
 	        response.getWriter().write(errorJson);
 	        
-			throw new TokenValidationException("The token is invalid");
+			throw new TokenValidationException("The token is invalid or expired");
 		}
 	}
 	

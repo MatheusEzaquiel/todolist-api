@@ -43,13 +43,8 @@ public class AuthController {
 		UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(data.username(),
 				data.password());
 		
-		//var auth = this.authenticationManager.authenticate(usernamePassword);
-		
 		try {
 		    var auth = this.authenticationManager.authenticate(usernamePassword);
-		    // Autenticação bem-sucedida, continue o processo
-		    System.out.println("Authentication successful");
-		    System.out.println("generating token");
 			
 			var token = tokenService.generateToken((User) auth.getPrincipal());
 			

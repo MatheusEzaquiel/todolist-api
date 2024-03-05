@@ -39,9 +39,9 @@ public class ChecklistController {
 
 			return ResponseEntity.status(HttpStatus.OK).body(checklists);
 
-		} catch (Exception e) {
+		} catch (Exception ex) {
 
-			System.out.println(e.getMessage());
+			System.out.println(ex);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error to list all lists");
 
 		}

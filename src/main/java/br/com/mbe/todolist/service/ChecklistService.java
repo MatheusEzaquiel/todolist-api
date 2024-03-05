@@ -48,7 +48,7 @@ public class ChecklistService {
 			
 			List<ChecklistJoinTasksDTO> listWithTasksArr = new ArrayList<ChecklistJoinTasksDTO>();
 
-			List<Checklist> checklists = checklistRepos.findByEnabled(1);
+			List<Checklist> checklists = checklistRepos.findByEnabled(true);
 
 			checklists.sort(Comparator.comparing(Checklist::getCreatedAt).reversed()); // Class::method
 
@@ -69,8 +69,8 @@ public class ChecklistService {
 
 			return listWithTasksArr;
 			
-		} catch (Exception e) {
-			System.out.println("error checklist service: method list(): " + e.getMessage());
+		} catch (Exception ex) {
+			System.out.println(ex);
 			return null;
 		}
 		
