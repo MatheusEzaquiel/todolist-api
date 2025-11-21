@@ -4,19 +4,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import br.com.mbe.todolist.domain.task.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.mbe.todolist.domain.checklist.Checklist;
 import br.com.mbe.todolist.domain.task.Task;
-import br.com.mbe.todolist.domain.task.dto.CreateTaskDTO;
-import br.com.mbe.todolist.domain.task.dto.DetailTaskDTO;
-import br.com.mbe.todolist.domain.task.dto.ListTaskDTO;
-import br.com.mbe.todolist.domain.task.dto.UpdateTaskDTO;
 import br.com.mbe.todolist.domain.taskPriority.TaskPriority;
 import br.com.mbe.todolist.exception.ChecklistNotFoundedException;
 import br.com.mbe.todolist.exception.Date1BiggerThanDate2Exception;
@@ -85,7 +83,7 @@ public class TaskService {
 					: null;
 
 			DetailTaskDTO taskSelectedDTO = new DetailTaskDTO(task, task.getPriority().getPriority(), startAtDateString,
-					startAtTimeString, endAtDateString, endAtTimeString);
+					startAtTimeString, endAtDateString, endAtTimeString, task.getPosition());
 
 			return taskSelectedDTO;
 
@@ -111,7 +109,7 @@ public class TaskService {
 					: null;
 
 			return new DetailTaskDTO(task, task.getPriority().getPriority(), startAtDateString, startAtTimeString,
-					endAtDateString, endAtTimeString);
+					endAtDateString, endAtTimeString, task.getPosition());
 
 		}).toList();
 
@@ -137,7 +135,7 @@ public class TaskService {
 					: null;
 
 			return new DetailTaskDTO(task, task.getPriority().getPriority(), startAtDateString, startAtTimeString,
-					endAtDateString, endAtTimeString);
+					endAtDateString, endAtTimeString, task.getPosition());
 
 		}).toList();
 
@@ -237,7 +235,9 @@ public class TaskService {
 				TaskPriority taskPriority = taskPriorityRepos.findByPriority(data.priority());
 				task.get().setPriority(taskPriority);
 			}
-
+			if (data.position() != null && data.position() >= 0 && data.position() != task.get().getPosition()) {
+				task.get().setPosition(data.position());
+			}
 			
 			return null;
 			
@@ -263,10 +263,40 @@ public class TaskService {
 		String endAtTimeString = task.getEndAtTime().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
 
 		DetailTaskDTO taskDeleted = new DetailTaskDTO(task, task.getPriority().getPriority(), startAtDateString,
-				startAtTimeString, endAtDateString, endAtTimeString);
+				startAtTimeString, endAtDateString, endAtTimeString, task.getPosition());
 
 		return taskDeleted;
 
+	}
+
+	public List<Task> updateTaskOrder(TaskOrderUpdateDTO data) {
+		List<Task> tasksToUpdate = new ArrayList<Task>();
+		UUID checklistID = UUID.fromString(data.checklistId());
+		List<String> taskIdsInOrder = data.taskListId();
+
+		if(data.checklistId() == null || data.taskListId() == null || data.taskListId().isEmpty()) {
+			System.out.println("Checklist or tasks is null");
+			return null;
+		}
+
+		int i = 0;
+		for (String taskId : taskIdsInOrder) {
+
+			Optional<Task> taskOpt = taskRepos.findById(UUID.fromString(taskId));
+
+			Task task = taskRepos.findById(UUID.fromString(taskId))
+					.orElseThrow(() -> new RuntimeException("Task not found where task order was updated "));
+			task.setPosition(++i); // posição ordinal
+			Task createdTask = taskRepos.save(task);
+			if(createdTask == null)
+				System.out.println("Erro ao Atualizar Tarefa");
+			//tasksToUpdate.add(task);
+		}
+
+		/*List<Task> tasksSaved = taskRepos.saveAll(tasksToUpdate);
+		if(tasksSaved.size() > 0)
+			System.out.println("Registros salvos");*/
+		return null;
 	}
 
 	/*
