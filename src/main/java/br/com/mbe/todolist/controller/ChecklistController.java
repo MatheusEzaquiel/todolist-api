@@ -1,7 +1,9 @@
 package br.com.mbe.todolist.controller;
 
+import java.util.List;
 import java.util.UUID;
 
+import br.com.mbe.todolist.domain.checklist.dto.ChecklistJoinTasksDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,25 +31,17 @@ public class ChecklistController {
 	@Autowired
 	ChecklistService checklistService;
 
-	
 	@GetMapping
-	public ResponseEntity list() {
+	public ResponseEntity<List<ChecklistJoinTasksDTO>> list() {
 
 		try {
-
-			var checklists = checklistService.list();
-
+			List<ChecklistJoinTasksDTO> checklists = checklistService.list();
 			return ResponseEntity.status(HttpStatus.OK).body(checklists);
-
 		} catch (Exception ex) {
-
 			System.out.println(ex);
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error to list all lists");
-
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 		}
-
 	}
-
 	
 	@GetMapping("/user/{userId}")
 	public ResponseEntity listByUser(@PathVariable UUID userId) {

@@ -57,6 +57,9 @@ public class Task {
 	
 	@Column(name="enabled")
 	private Boolean enabled;
+
+	@Column(name="position")
+	private Integer position;
 	
 	@JsonIgnore
 	@ManyToOne
@@ -246,7 +249,14 @@ public class Task {
 	public void setChecklist(Checklist checklist) {
 		this.checklist = checklist;
 	}
-	
+
+	public Integer getPosition() {
+		return position;
+	}
+
+	public void setPosition(Integer position) {
+		this.position = position;
+	}
 
 	public void delete() {
 		this.enabled = false;

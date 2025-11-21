@@ -6,10 +6,10 @@ import java.time.LocalTime;
 public record UpdateTaskDTO(String title, String description, Boolean done, String priority,
 		LocalDate startAtDate, LocalTime startAtTime,
 		LocalDate endAtDate, LocalTime endAtTime,
-		Boolean enabled) {
+		Boolean enabled, Integer position) {
 	
 
 	public UpdateTaskDTO(Boolean enabled) {
-        this(null, null, null, null, null, null, null, null, enabled);
+        this(null, null, null, null, null, null, null, null, enabled, null);
     }
 }

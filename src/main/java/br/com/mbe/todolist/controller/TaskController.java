@@ -3,6 +3,7 @@ package br.com.mbe.todolist.controller;
 import java.util.List;
 import java.util.UUID;
 
+import br.com.mbe.todolist.domain.task.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.mbe.todolist.domain.task.Task;
-import br.com.mbe.todolist.domain.task.dto.CreateTaskDTO;
-import br.com.mbe.todolist.domain.task.dto.DetailTaskDTO;
-import br.com.mbe.todolist.domain.task.dto.ListTaskDTO;
-import br.com.mbe.todolist.domain.task.dto.UpdateTaskDTO;
 import br.com.mbe.todolist.service.TaskService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -64,7 +61,6 @@ public class TaskController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity update(@RequestBody UpdateTaskDTO data, @PathVariable UUID id) throws Exception {
-		
 		DetailTaskDTO taskUpdated = taskService.update(data, id);
 		return ResponseEntity.status(HttpStatus.OK).body(taskUpdated);
 	}
@@ -84,6 +80,11 @@ public class TaskController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error to create task");
 		}
 		
+	}
+
+	@PutMapping("/reorder")
+	public List<Task> reorderTasks(@RequestBody TaskOrderUpdateDTO data) {
+		return taskService.updateTaskOrder(data);
 	}
 
 }

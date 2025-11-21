@@ -17,16 +17,17 @@ public record DetailTaskDTO(
 		String endAtTime,
 		Boolean enabled,
 		LocalDateTime createdAt,
-		LocalDateTime updatedAt) {
+		LocalDateTime updatedAt,
+		Integer position) {
 	
 
 
-	public DetailTaskDTO(Task task, String priority, String startAtDate, String startAtTime, String endAtDate, String endAtTime) {
+	public DetailTaskDTO(Task task, String priority, String startAtDate, String startAtTime, String endAtDate, String endAtTime, Integer position) {
 
 		this(task.getId(), task.getTitle(), task.getDescription(), task.isDone() ,priority,
 				startAtDate, startAtTime,
 				endAtDate, endAtTime,
-				task.isEnabled(), task.getCreatedAt(), task.getUpdatedAt());
+				task.isEnabled(), task.getCreatedAt(), task.getUpdatedAt(), position);
 	}
 	
 }

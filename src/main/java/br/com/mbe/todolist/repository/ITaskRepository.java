@@ -1,6 +1,7 @@
 package br.com.mbe.todolist.repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +14,8 @@ import br.com.mbe.todolist.domain.task.dto.ListTaskDTO;
 public interface ITaskRepository extends JpaRepository<Task, UUID>{
 
 	List<Task> findByEnabled(Boolean enabled);
+
+	Optional<Task> findById(UUID id);
 	
 	//List<DetailTaskDTO> findByChecklist(UUID checklistId);
 	
@@ -41,5 +44,5 @@ public interface ITaskRepository extends JpaRepository<Task, UUID>{
 	
 	@Query("SELECT COUNT(t.id) FROM Task t WHERE t.checklist.user.id = :userId AND t.endAtDate < CURRENT_DATE")
 	Integer countLateTasksByUser(@Param("userId") UUID userId);
-	
+
 }
